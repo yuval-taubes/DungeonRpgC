@@ -33,7 +33,10 @@ namespace DungeonRpg.Classes.DungeonFolder
             Console.WriteLine("You enter the door");
             Console.Clear();
             Encounter firstFight = new Encounter(Player, Rooms[0].Monster);
+            Rooms.Remove(Rooms[0]);
             firstFight.DetermineFirstAction();
+
+            TwoDoors();
         }
         public void DoorMenu() {
             
@@ -41,6 +44,25 @@ namespace DungeonRpg.Classes.DungeonFolder
         public void TwoDoors()
         {
 
+            if (Rooms.Count < 2)
+            {
+                Console.WriteLine("Error not enough Rooms");
+                return;
+            }
+
+            Console.Clear();
+            Console.WriteLine("You come accross two more doors");
+            Console.WriteLine($"{Rooms[0].Monster.Door.DoorArt}         {Rooms[0].Monster.Door.DoorArt}");
+            Console.WriteLine();
+            Console.ReadKey();
+
+            List<string> options = new List<string>()
+            {
+                "Door 1",
+                "Door 2",
+            };
+
+            Menu menu = new Menu("Choose a Door", options);
         }
     }
 }
