@@ -40,7 +40,6 @@ namespace DungeonRpg.Classes.PlayerFolder
 
             do
             {
-
                 if (Player.Speed < Monster.Speed)
                 {
                     MonsterAttacks();
@@ -73,10 +72,10 @@ namespace DungeonRpg.Classes.PlayerFolder
         {
             double damage = CalculatePlayerDamage();
             Monster.TakeDamage(damage);
-            Console.WriteLine($"You attack the {Monster.Name} and do {(int)damage} ");
+            Console.WriteLine($"You attack the {Monster.Name} and do {(int)damage} damage");
             if (Monster.CurrentHealth > 0)
             {
-                Console.WriteLine($"Max health is {Monster.MaxHealth} current health is {Monster.CurrentHealth}");
+                Console.WriteLine($"The {Monster.Name} has {Monster.CurrentHealth} Health");
             }
             else
             {
@@ -104,5 +103,6 @@ namespace DungeonRpg.Classes.PlayerFolder
             Console.WriteLine($"Your shield blocked {(int)damage} damage");
             return damage;
         }
+
     }
 }
