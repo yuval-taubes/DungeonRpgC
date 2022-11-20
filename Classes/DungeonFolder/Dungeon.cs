@@ -97,7 +97,9 @@ namespace DungeonRpg.Classes.DungeonFolder
         }
         public void DetermineNextDoor()
         {
-            Monster monster1 = DetermineMonster();
+            while ()
+            {
+                            Monster monster1 = DetermineMonster();
             Monster monster2 = DetermineMonster();
 
             Console.WriteLine("You come across 2 more doors");
@@ -124,9 +126,9 @@ namespace DungeonRpg.Classes.DungeonFolder
                 break;
             }
 
+            CurrentRoom++;
+            }
 
-
-            
         }
         public void FightMonster(Monster monster)
         {
