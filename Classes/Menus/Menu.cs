@@ -11,6 +11,7 @@ namespace DungeonRpg.Classes.Menus
         private List<string> Options;
         private string Prompt;
         private int SelectedOption = 0;
+        //because i want to print this with every menu, it has to be static
         private static string Title = @"
             ________                                              __________        .__    .___            
             \______ \  __ __  ____    ____   ____  ____   ____    \______   \_____  |__| __| _/___________ 
@@ -19,16 +20,19 @@ namespace DungeonRpg.Classes.Menus
             /_______  /____/|___|  /\___  / \___  >____/|___|  /   |____|_  /(____  /__\____ |\___  >__|   
                     \/           \//_____/      \/           \/           \/      \/        \/    \/       
             ";
+
+        //since monster art is different for every monster, and i want the monster to appear on the menu I had to use a static string
         public static string MonsterArt { get; private set; }
-        public static string Seperator = @"---------------------------------------------------------------------------------------------------------------------";
         public Menu(string prompt, List<string> option)
         {
             Prompt = prompt;
             Options = option;
         }
 
+        //this code is from the in class example
         private void DisplayOptions()
         {
+            //printing title and art before every menu
             Console.WriteLine(Title);
             Console.WriteLine(MonsterArt);
             Console.WriteLine(Prompt);

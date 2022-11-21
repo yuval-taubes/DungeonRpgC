@@ -6,27 +6,19 @@ using System.Threading.Tasks;
 
 namespace DungeonRpg.Classes.Tools
 {
-    internal class Shield
+    //Inheritance
+    internal class Shield : Item
     {
         public double BlockChance { get; private set; }
-
-        public double EvadeChance { get; private set; }
-
         public double Defense { get; private set; }
-
         public bool CanDodge { get; private set; } = false;
-        public Shield(double blockChance, double evadeChance, double defense)
+
+        public Shield(string name, double blockChance, double defense)
         {
+            Name = name;
             BlockChance = blockChance;
-            EvadeChance = evadeChance;
             Defense = defense;
-        }
-        public Shield(double blockChance, double evadeChance, double defense, bool canDodge)
-        {
-            BlockChance = blockChance;
-            EvadeChance = evadeChance;
-            Defense = defense;
-            CanDodge = canDodge;
+            Description = $"A Shield, reduces incoming damage by {defense} and gives a chance to completely block all damage {blockChance}%";
         }
     }
 }

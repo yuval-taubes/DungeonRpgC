@@ -10,16 +10,12 @@ namespace DungeonRpg.Classes.DungeonFolder
     internal class Dungeon
     {
         public string Name { get; private set; }
-        public List<Room> Rooms { get; private set; } = new();
-
         public Player Player { get; private set; }
-        
-        public int DungeonLength { get; private set;}
+        public int DungeonLength { get; private set; }
+        private int CurrentRoom { get; set; }
+        public List<Monster> Monsters { get; private set; } = new();
 
-        private int CurrentRoom { get; private set;}
-
-        public List<Monster> Monsters { get; private set;}
-
+        //for convenience
         private Random rnd = new Random();
 
         public Dungeon(string name, Player player, int dungeonLength)
@@ -28,26 +24,12 @@ namespace DungeonRpg.Classes.DungeonFolder
             Player = player;
             DungeonLength = dungeonLength;
         }
-        public void AddRoom(Room room)
+        public void AddMonster(Monster monster)
         {
-            Rooms.Add(room);
+            Monsters.Add(monster);
         }
-        public void EnteringDungeon()
+        public Menu DoorMenu()
         {
-            Console.Clear();
-            Console.WriteLine("The first door of the dungeon");
-            Console.WriteLine($"{Rooms[0].Monster.Door.DoorArt}");
-            Console.WriteLine("Press any key to enter the door");
-            Console.ReadKey();
-            Console.WriteLine("You enter the door");
-            Console.Clear();
-            Encounter firstFight = new Encounter(Player, Rooms[0].Monster);
-            Rooms.Remove(Rooms[0]);
-            firstFight.DetermineFirstAction();
-
-            TwoDoors();
-        }
-        public Menu DoorMenu() {
             List<string> options = new List<string>()
             {
                 "Door 1",
@@ -56,90 +38,96 @@ namespace DungeonRpg.Classes.DungeonFolder
             Menu menu = new Menu("Choose a door", options);
             return menu;
         }
-        public void TwoDoors()
+
+        public void EnterDungeon()
         {
-
-            if (Rooms.Count < 2)
-            {
-                Console.WriteLine("Error not enough Rooms");
-                return;
-            }
-
-            Console.Clear();
-            Console.WriteLine("You come accross two more doors");
-            Console.WriteLine($"{Rooms[0].Monster.Door.DoorArt}         {Rooms[0].Monster.Door.DoorArt}");
-            Console.WriteLine();
-            Console.ReadKey();
-
-            List<string> options = new List<string>()
-            {
-                "Door 1",
-                "Door 2",
-            };
-
-            Menu menu = new Menu("Choose a Door", options);
-        }
-
-        public void FirstRoom()
-        {
+            Player.IncreaseAttemptedGames();
             Monster monster = DetermineMonster();
             Console.Clear();
             Console.WriteLine("The first door of the dungeon");
             Console.WriteLine($"{monster.Door.DoorArt}");
             Console.WriteLine("Press any key to enter the door");
             Console.ReadKey();
-            Console.WriteLine("You enter the door");
             Console.Clear();
-            
+
             FightMonster(monster);
 
+            //this counts how many rooms you have cleared
             CurrentRoom++;
+
+            DetermineNextDoor();
         }
         public void DetermineNextDoor()
         {
-            while ()
+            if (Player.CurrentHealth <= 0)
             {
-                            Monster monster1 = DetermineMonster();
-            Monster monster2 = DetermineMonster();
-
-            Console.WriteLine("You come across 2 more doors");
-            Console.WriteLine($"{monster1.Door.DoorArt}                 {monster2.Door.DoorArt}");
-
-            Menu menu = DoorMenu();
-
-            menu.RunMenu();
-
-            switch (menu.RunMenu())
+                Console.Clear();
+                Console.WriteLine(@"
+                _____.___.                ________   .__             .___
+                \__  |   |  ____   __ __  \______ \  |__|  ____    __| _/
+                 /   |   | /  _ \ |  |  \  |    |  \ |  |_/ __ \  / __ | 
+                 \____   |(  <_> )|  |  /  |    `   \|  |\  ___/ / /_/ | 
+                 / ______| \____/ |____/  /_______  /|__| \___  >\____ | 
+                 \/                               \/          \/      \/ 
+                ");
+                return;
+            }
+            while (CurrentRoom != DungeonLength)
             {
-                case 0:
-                Console.WriteLine("You choose door 1");
-                Console.WriteLine("Press any key to enter door");
+                Monster monster1 = DetermineMonster();
+                Monster monster2 = DetermineMonster();
+
+                Console.WriteLine("You come across 2 more doors");
+                Console.WriteLine(monster1.Door.DoorArt);
+                Console.WriteLine();
+                Console.WriteLine(monster2.Door.DoorArt);
+
+                Console.WriteLine("Press any Key to Continue");
                 Console.ReadKey();
-                FightMonster(monster1);
-                break;
-                case 1:
-                Console.WriteLine("You chose door 2");
-                Console.WriteLine("Press any key to enter door");
-                Console.ReadKey();
-                FightMonster(monster2);
 
-                break;
+                Menu menu = DoorMenu();
+
+                switch (menu.RunMenu())
+                {
+                    case 0:
+                        Console.WriteLine("You choose door 1");
+                        Console.WriteLine("Press any key to enter door");
+                        Console.ReadKey();
+                        FightMonster(monster1);
+                        break;
+                    case 1:
+                        Console.WriteLine("You chose door 2");
+                        Console.WriteLine("Press any key to enter door");
+                        Console.ReadKey();
+                        FightMonster(monster2);
+
+                        break;
+                }
+
+                CurrentRoom++;
             }
+            //once you clear the room count you clear the dugeon, and increases your won games tracker
+            Console.WriteLine(@"
+            _________  .__                                      .___    ________                                                 
+            \_   ___ \ |  |    ____  _____  _______   ____    __| _/    \______ \   __ __   ____    ____    ____   ____    ____  
+            /    \  \/ |  |  _/ __ \ \__  \ \_  __ \_/ __ \  / __ |      |    |  \ |  |  \ /    \  / ___\ _/ __ \ /  _ \  /    \ 
+            \     \____|  |__\  ___/  / __ \_|  | \/\  ___/ / /_/ |      |    `   \|  |  /|   |  \/ /_/  >\  ___/(  <_> )|   |  \
+             \______  /|____/ \___  >(____  /|__|    \___  >\____ |     /_______  /|____/ |___|  /\___  /  \___  >\____/ |___|  /
+                    \/            \/      \/             \/      \/             \/             \//_____/       \/             \/ 
+            ");
 
-            CurrentRoom++;
-            }
-
+            Player.IncreaseWonGames();
         }
-        public void FightMonster(Monster monster)
+        private void FightMonster(Monster monster)
         {
             Encounter fight = new Encounter(Player, monster);
             fight.DetermineFirstAction();
         }
-        public Monster DetermineMonster()
+        private Monster DetermineMonster()
         {
+            //determining which monster is going to show up next
             int monsterIndex = rnd.Next(0, Monsters.Count);
             return Monsters[monsterIndex];
         }
-        
     }
 }
